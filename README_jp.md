@@ -22,7 +22,7 @@
 
 ```bash
 # ファイルをダウンロード
-curl -O https://github.com/kitanokitsune/naive_gauss_jordan/blob/main/gaussjordan.py
+curl -O https://raw.githubusercontent.com/kitanokitsune/naive_gauss_jordan/main/gaussjordan.py
 ```
 
 ## 🛠 使い方
