@@ -28,10 +28,10 @@ curl -O https://raw.githubusercontent.com/kitanokitsune/naive_gauss_jordan/main/
 ## 🛠 Usage
 
 ### 1. Solving Linear Equations
-Solve the system:
-$1x + 2y + 5z = 12$
-$1x + 3y + 1z = 10$
-$2x + 3y + 1z = 14$
+Solve the system:  
+$1x + 2y + 5z = 12$  
+$1x + 3y + 1z = 10$  
+$2x + 3y + 1z = 14$  
 
 ```python
 from gaussjordan import solve

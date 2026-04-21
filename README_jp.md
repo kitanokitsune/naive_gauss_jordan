@@ -28,10 +28,10 @@ curl -O https://raw.githubusercontent.com/kitanokitsune/naive_gauss_jordan/main/
 ## 🛠 使い方
 
 ### 1. 連立一次方程式を解く
-以下を解きます：
-$1x + 2y + 5z = 12$
-$1x + 3y + 1z = 10$
-$2x + 3y + 1z = 14$
+以下を解きます：  
+$1x + 2y + 5z = 12$  
+$1x + 3y + 1z = 10$  
+$2x + 3y + 1z = 14$  
 
 ```python
 from gaussjordan import solve
