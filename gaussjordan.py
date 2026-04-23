@@ -33,7 +33,7 @@ SOFTWARE.
 import os
 from fractions import Fraction
 from unicodedata import east_asian_width
-
+from copy import deepcopy
 
 # ------------------------------------------
 def string_length(text):
@@ -119,8 +119,10 @@ def _decomposition(Mat):
         row = []
         for i in range(Ncol):
             row.append(Mat[n][i])
+        zero = row[0] - row[0] # unify number type to type(row[0])
+        one = zero + 1         # unify number type to type(row[0])
         for i in range(Nrow):
-            row.append(1 if (i==n) else 0)
+            row.append(one if (i==n) else zero)
         A.append(row)
 
     # Decomposition
@@ -268,8 +270,10 @@ def invert(Mat):
         row = []
         for i in range(Nrow):
             row.append(Mat[n][i])
+        zero = row[0] - row[0] # unify number type to type(row[0])
+        one = zero + 1         # unify number type to type(row[0])
         for i in range(Nrow):
-            row.append(1 if (i==n) else 0)
+            row.append(one if (i==n) else zero)
         A.append(row)
 
     # Solve
@@ -353,10 +357,10 @@ def dot(A, B):
 
 
 # ------------------------------------------
-def det(A):
+def det(M):
     __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.det()'
 
-    shape = _getmatrixshape(A)
+    shape = _getmatrixshape(M)
     Nrow = shape[0]
     if len(shape) == 2:
         Ncol = shape[1]
@@ -365,7 +369,7 @@ def det(A):
     if Nrow != Ncol or Nrow < 1 or Ncol < 1:
         raise ValueError("{}: Shape of matrix is illegal: {}".format(__FUNCNAME, shape))
 
-    A = A[:] # Deep copy
+    A = deepcopy(M) # Deep copy
 
     # Triangularize
     sign = 1
