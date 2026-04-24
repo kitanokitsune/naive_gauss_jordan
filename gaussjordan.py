@@ -33,7 +33,6 @@ SOFTWARE.
 import os
 from fractions import Fraction
 from unicodedata import east_asian_width
-from copy import deepcopy
 
 # ------------------------------------------
 def string_length(text):
@@ -62,7 +61,7 @@ def _getmatrixshape(M):
         try:
             l = len(row)
         except:
-            return (Nrow,-1)
+            return (Nrow, -1)
         if l != Ncol:
             return (Nrow, -1) # Shape of M is illegal
     return (Nrow, Ncol)
@@ -107,20 +106,20 @@ def _subrows(row1, row2, mag):
 def _decomposition(Mat):
 
     shapeM = _getmatrixshape(Mat)
+    if len(shapeM) != 2 or shapeM[1] < 1:
+        raise TypeError
+
     Nrow = shapeM[0]
-    if len(shapeM) == 2:
-        Ncol = shapeM[1]
-    else:
-        Ncol = 0
+    Ncol = shapeM[1]
 
     # Make augmented matrix: A
     A = []
+    zero = Mat[0][0] - Mat[0][0] # type cast to dtype(Mat)
+    one = zero + 1
     for n in range(Nrow):
         row = []
         for i in range(Ncol):
             row.append(Mat[n][i])
-        zero = row[0] - row[0] # unify number type to type(row[0])
-        one = zero + 1         # unify number type to type(row[0])
         for i in range(Nrow):
             row.append(one if (i==n) else zero)
         A.append(row)
@@ -266,12 +265,12 @@ def invert(Mat):
 
     # Make augmented matrix: A
     A = []
+    zero = Mat[0][0] - Mat[0][0] # type cast to dtype(Mat)
+    one = zero + 1
     for n in range(Nrow):
         row = []
         for i in range(Nrow):
             row.append(Mat[n][i])
-        zero = row[0] - row[0] # unify number type to type(row[0])
-        one = zero + 1         # unify number type to type(row[0])
         for i in range(Nrow):
             row.append(one if (i==n) else zero)
         A.append(row)
@@ -369,7 +368,13 @@ def det(M):
     if Nrow != Ncol or Nrow < 1 or Ncol < 1:
         raise ValueError("{}: Shape of matrix is illegal: {}".format(__FUNCNAME, shape))
 
-    A = deepcopy(M) # Deep copy
+    # deepcopy : A = deepcopy(M)
+    A = []
+    for r in M:
+        row = []
+        for c in r:
+            row.append(c)
+        A.append(row)
 
     # Triangularize
     sign = 1
@@ -506,6 +511,11 @@ def spprint_mat(prefix='', mat=[]):
         raise ValueError("{}: Shape of matrix is illegal: {}".format(__FUNCNAME, shape))
 
     # Define Matrix Representation Style
+    #
+    #  LeftUpper { 1, 0, 0 | RightUpper
+    #       Left | 0, 1, 0 | Right
+    #  LeftLower | 0, 0, 1 } RightLower
+    #
     LeftUpper = '{ '
     RightUpper = ' |'
 
