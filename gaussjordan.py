@@ -34,6 +34,8 @@ import os
 from fractions import Fraction
 from unicodedata import east_asian_width
 
+_THIS_FILE = os.path.splitext(os.path.split(__file__)[1])[0]
+
 # ------------------------------------------
 def string_length(text):
     count = 0
@@ -117,9 +119,7 @@ def _decomposition(Mat):
     zero = Mat[0][0] - Mat[0][0] # type cast to dtype(Mat)
     one = zero + 1
     for n in range(Nrow):
-        row = []
-        for i in range(Ncol):
-            row.append(Mat[n][i])
+        row = [ c for c in Mat[n] ]
         for i in range(Nrow):
             row.append(one if (i==n) else zero)
         A.append(row)
@@ -194,7 +194,7 @@ def _displayform(A, delimiter=', '):
 def solve(Mat, Vec):
     """Gauss-Jordan Solver
     """
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.solve()'
+    __FUNCNAME = _THIS_FILE + '.solve()'
 
     shapeM = _getmatrixshape(Mat)
     Nrow = shapeM[0]
@@ -221,9 +221,7 @@ def solve(Mat, Vec):
     # Make augmented matrix: A
     A = []
     for n in range(Nrow):
-        row = []
-        for i in range(Nrow):
-            row.append(Mat[n][i])
+        row = [ c for c in Mat[n] ]
         row.append(Vec[n])
         A.append(row)
 
@@ -241,9 +239,7 @@ def solve(Mat, Vec):
                 _subrows(A[i], A[n], mag)
 
     # Forming
-    ans = []
-    for n in range(Nrow):
-        ans.append(A[n][Nrow])
+    ans = [ A[n][Nrow] for n in range(Nrow) ]
 
     return ans
 
@@ -252,7 +248,7 @@ def solve(Mat, Vec):
 def invert(Mat):
     """Gauss-Jordan Eliminator
     """
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.invert()'
+    __FUNCNAME = _THIS_FILE + '.invert()'
 
     shapeM = _getmatrixshape(Mat)
     Nrow = shapeM[0]
@@ -268,10 +264,8 @@ def invert(Mat):
     zero = Mat[0][0] - Mat[0][0] # type cast to dtype(Mat)
     one = zero + 1
     for n in range(Nrow):
-        row = []
-        for i in range(Nrow):
-            row.append(Mat[n][i])
-        for i in range(Nrow):
+        row = [ c for c in Mat[n] ]
+        for i in range(Ncol):
             row.append(one if (i==n) else zero)
         A.append(row)
 
@@ -298,7 +292,7 @@ def invert(Mat):
 
 # ------------------------------------------
 def transpose(A):
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.transpose()'
+    __FUNCNAME = _THIS_FILE + '.transpose()'
 
     shape = _getmatrixshape(A)
     Nrow = shape[0]
@@ -321,7 +315,7 @@ def transpose(A):
 
 # ------------------------------------------
 def dot(A, B):
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.dot()'
+    __FUNCNAME = _THIS_FILE + '.dot()'
 
     shapeA = _getmatrixshape(A)
     NArow = shapeA[0]
@@ -357,7 +351,7 @@ def dot(A, B):
 
 # ------------------------------------------
 def det(M):
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.det()'
+    __FUNCNAME = _THIS_FILE + '.det()'
 
     shape = _getmatrixshape(M)
     Nrow = shape[0]
@@ -369,12 +363,7 @@ def det(M):
         raise ValueError("{}: Shape of matrix is illegal: {}".format(__FUNCNAME, shape))
 
     # deepcopy : A = deepcopy(M)
-    A = []
-    for r in M:
-        row = []
-        for c in r:
-            row.append(c)
-        A.append(row)
+    A = [ [c for c in r] for r in M ]
 
     # Triangularize
     sign = 1
@@ -401,7 +390,7 @@ def det(M):
 def rank(Mat):
     """rank
     """
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.rank()'
+    __FUNCNAME = _THIS_FILE + '.rank()'
 
     shapeM = _getmatrixshape(Mat)
     Nrow = shapeM[0]
@@ -422,7 +411,7 @@ def moore_penrose(Mat):
     Mat = B * C
     Mat+ = Ct * (Bt * Mat * Ct)^-1 * Bt
     """
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.moore_penrose()'
+    __FUNCNAME = _THIS_FILE + '.moore_penrose()'
 
     shapeM = _getmatrixshape(Mat)
     Nrow = shapeM[0]
@@ -436,18 +425,12 @@ def moore_penrose(Mat):
     rank, A = _decomposition(Mat)
 
     # Forming
-    P = []
-    for n in range(Nrow):
-        P.append(A[n][Ncol:])
+    P = [ A[n][Ncol:] for n in range(Nrow) ]
     P = invert(P)
 
-    B = []
-    for n in range(Nrow):
-        B.append(P[n][:rank])
+    B = [ P[n][:rank] for n in range(Nrow) ]
 
-    C = []
-    for n in range(rank):
-        C.append(A[n][:Ncol])
+    C = [ A[n][:Ncol] for n in range(rank) ]
 
     Bt = transpose(B)
     Ct = transpose(C)
@@ -494,7 +477,7 @@ def toReal(M):
 
 # ------------------------------------------
 def spprint_mat(prefix='', mat=[]):
-    __FUNCNAME = os.path.splitext(os.path.split(__file__)[1])[0] + '.spprint_mat()'
+    __FUNCNAME = _THIS_FILE + '.spprint_mat()'
 
     shape = _getmatrixshape(mat)
     Nrow = shape[0]
